@@ -177,7 +177,7 @@ public class Vehicle
 				{
 					case 0: System.out.printf("%s%s%s%s\t", v.sipp[0], v.sipp[1], v.sipp[2], v.sipp[3]); break;
 					case 1: System.out.printf("%-18s\t", v.name); break;
-					case 2: System.out.printf("£%.2f\t", v.price); break;
+					case 2: System.out.printf("L%.2f\t", v.price); break;
 					case 3: System.out.printf("%-10s\t", v.supplier); break;
 					case 4: System.out.printf("%.1f\t", v.rating); break;
 					case 5: System.out.printf("%d\t\t", v.vehicleScore); break;
