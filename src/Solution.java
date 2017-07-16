@@ -34,12 +34,19 @@ public class Solution
 	// User interface
 	private static void menuLoop(ArrayList<Vehicle> vehicles)
 	{
+		// Holds the most recent input typed by the user on the CLI
 		String input;
+		// Is it time to quit yet?
 		boolean continueLoop = true;
+		// Is it necessary to display the menu again?
 		boolean displayMenu = true;
+		// Reads the input on the CLI
 		Scanner s = new Scanner(System.in);
+		// Menu options to display
 		String menuText = "\n\nPlease select an option from the menu below to view the output for each task. Please enter a number:\n 1. Print the list of vehicles by ascending order of price. \n 2. Print the specifications of each vehicle based on SIPP. \n 3. Print the highest rated supplier of each type of vehicle. \n 4. Print vehicles in descending order of score. \n 5. Toggle between textual and JSON output. \n 6. Quit.";
+		// A text representation of the output type - plain text or JSON.
 		String formatString;
+		// Output format, true->json, false->plain text
 		boolean jsonOutput = false;
 		
 		// Loop until user selects 'q' to quit
@@ -49,6 +56,7 @@ public class Solution
 			System.out.println("Press enter to continue");
 			input = s.nextLine();
 			
+			// Output format to display
 			formatString = (jsonOutput) ? "JSON" : "Textual";
 			// Does the menu need printing again?
 			if(displayMenu){ System.out.println(menuText); System.out.println("Output format: " + formatString); }
@@ -60,8 +68,10 @@ public class Solution
 			// Decide action to take
 			// printFields' first parameter is a list whose elements are the index of a vehicle variable and so specifies
 			// which fields to print and in what order across the screen.
+			// The methods each return an ordered list of vehicles to display.
 			switch(input)
 			{
+				// Tasks 1-4
 				case "1": 
 					Vehicle.printFields(new int[] {1,2}, getPriceAscending(vehicles), jsonOutput); 
 					break;
@@ -75,20 +85,24 @@ public class Solution
 					Vehicle.printFields(new int[] {1, 4, 5, 6}, scoreVehiclesAndGetDescending(vehicles), jsonOutput); 
 					break;
 				case "5": 
+					// Switch output format
 					jsonOutput = !jsonOutput; 
 					break;
 				case "6":
+					// Exit program
 					continueLoop = false;
 					break;
 				default: 
+					// Input validation
 					System.out.printf("\'%s\' is an invalid input.\n", input); displayMenu = false;
 			}
 		}
 		// Loop quit - return to main.
-		
+		// Close CLI input stream.
 		s.close();
 	}
-			
+	
+	// Gets vehicles from online JSON and populates the data structure.
 	private static ArrayList<Vehicle> populateVehicles(String urlString)
 	{
 		// Collection to return
@@ -146,15 +160,18 @@ public class Solution
 	{		
 		// Holds a mapping of Type -> highest rating -> supplier, by storing a list of vehicles with only
 		// relevant fields filled.
+		// Not the most space efficient method, but no need to over engineer it.
 		ArrayList<Vehicle> map = new ArrayList<Vehicle>();
 		
-		// find the highest rated per type
+		// Find the highest rated per type.
+		// Holds the index in the map of the most recent search result.
 		int index;
 		for(Vehicle v:vehicles)
 		{
 			// Find the vehicle type in the map
 			index = Collections.binarySearch(map, v, Vehicle.typeLexSort);
 			// Is it already there? no - add it, yes - is the rating higher than the current highest? yes - update leader.
+			// An index < 0 will mean the item has not been found and will give the -index+1 where it should be placed.
 			if(index < 0)
 				map.add(Math.abs(index)-1, v);
 			else if(map.get(index).rating < v.rating)
